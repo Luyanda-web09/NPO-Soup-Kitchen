@@ -7,12 +7,22 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Add Google Maps API with your key -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmqJD5XxpPozi-bG9OqFm5_C6FeBiDaYw&callback=initMap&libraries=&v=weekly" defer></script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            scroll-behavior: smooth;
-        }
+        body { font-family: 'Inter', sans-serif; }
+        html { scroll-behavior: smooth; }
         .hidden-form { display: none; }
+        #map { height: 100%; }
+        #map-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            background: #f3f4f6;
+            color: #6b7280;
+        }
     </style>
 </head>
 <body class="bg-stone-50 text-gray-900">
@@ -25,7 +35,7 @@
                     <i data-lucide="utensils-crossed" id="nav-icon" class="w-6 h-6 text-white transition-colors"></i>
                 </div>
                 <span id="nav-text" class="text-xl font-bold tracking-tight text-white">
-                    KwaCaleni Soup<span id="nav-highlight" class="text-red-200">Kitchen</span>
+                    KwaCaleni<span id="nav-highlight" class="text-red-200">Kitchen</span>
                 </span>
             </a>
 
@@ -37,7 +47,9 @@
                 <a href="#hours" class="text-sm font-medium text-white/90 hover:text-white hover:text-red-500 transition-colors nav-link">Hours</a>
                 <a href="#volunteer" class="text-sm font-medium text-white/90 hover:text-white hover:text-red-500 transition-colors nav-link">Volunteer</a>
                 <a href="#contact" class="text-sm font-medium text-white/90 hover:text-white hover:text-red-500 transition-colors nav-link">Contact</a>
-                <a href="#donate" id="nav-donate-btn" class="rounded-full px-6 py-2 font-semibold shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 bg-white text-red-600 hover:bg-gray-100">Donate Now</a>
+                <a href="#donate" id="nav-donate-btn" class="rounded-full px-6 py-2 font-semibold shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 bg-white text-red-600 hover:bg-gray-100">
+                    Donate Now
+                </a>
             </nav>
 
             <!-- Mobile Toggle -->
@@ -509,8 +521,12 @@
                     </div>
                     <div class="mt-12"><p class="text-gray-500 text-sm">Emergency food assistance is available during operating hours. Please call ahead if possible.</p></div>
                 </div>
-                <div class="md:w-2/3 h-[400px] md:h-auto bg-gray-200 relative">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3308.438509899394!2d18.658745276416817!3d-33.980127773214774!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1dcc42f39a588b2d%3A0xcf7a8253db806fd3!2s55919%20Nomatse%20St%2C%20Kuyasa%2C%20Khayelitsha%2C%20Cape%20Town%2C%207784!5e0!3m2!1sen!2sza!4v1709676424080!5m2!1sen!2sza" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" class="absolute inset-0"></iframe>
+                <div class="md:w-2/3 h-[400px] md:h-auto bg-gray-200 relative" id="map-container">
+                    <div id="map-loading" class="absolute inset-0 z-10">
+                        <i data-lucide="map-pin" class="w-12 h-12 text-gray-400 mb-4 animate-pulse"></i>
+                        <p class="text-gray-600">Loading map...</p>
+                    </div>
+                    <div id="map" class="absolute inset-0"></div>
                 </div>
             </div>
         </div>
@@ -523,7 +539,7 @@
                 <div class="space-y-6">
                     <div class="flex items-center gap-2">
                         <div class="bg-white/10 p-2 rounded-full"><i data-lucide="heart" class="w-5 h-5 text-red-500"></i></div>
-                        <span class="text-2xl font-bold">KwaCaleni Soup<span class="text-red-500">Kitchen</span></span>
+                        <span class="text-2xl font-bold">KwaCaleni<span class="text-red-500">Kitchen</span></span>
                     </div>
                     <p class="text-gray-400 leading-relaxed">Serving meals with love and compassion since 2020. Join us in our mission to eliminate hunger and build a stronger community.</p>
                     <div class="flex gap-4">
@@ -569,6 +585,290 @@
     <script>
         // Initialize Lucide Icons
         lucide.createIcons();
+
+        // Google Maps Initialization with Geocoding
+        let map;
+        let marker;
+        let infoWindow;
+
+        function initMap() {
+            // First create a basic map with default coordinates
+            const defaultLocation = { lat: -33.9249, lng: 18.4241 }; // Cape Town center as fallback
+            
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 12,
+                center: defaultLocation,
+                mapTypeId: 'roadmap',
+                mapTypeControl: true,
+                mapTypeControlOptions: {
+                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                    position: google.maps.ControlPosition.TOP_RIGHT,
+                    mapTypeIds: ['roadmap', 'satellite']
+                },
+                streetViewControl: false,
+                fullscreenControl: true,
+                styles: [
+                    {
+                        "featureType": "all",
+                        "elementType": "labels.text.fill",
+                        "stylers": [
+                            {
+                                "color": "#7c93a3"
+                            },
+                            {
+                                "lightness": "-10"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "administrative.country",
+                        "elementType": "geometry",
+                        "stylers": [
+                            {
+                                "visibility": "on"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "administrative.country",
+                        "elementType": "geometry.stroke",
+                        "stylers": [
+                            {
+                                "color": "#a0a4a5"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "administrative.province",
+                        "elementType": "geometry.stroke",
+                        "stylers": [
+                            {
+                                "color": "#62838e"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "landscape",
+                        "elementType": "geometry.fill",
+                        "stylers": [
+                            {
+                                "color": "#f5f5f5"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "landscape.man_made",
+                        "elementType": "geometry.fill",
+                        "stylers": [
+                            {
+                                "color": "#ffffff"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "poi",
+                        "elementType": "all",
+                        "stylers": [
+                            {
+                                "visibility": "off"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "road",
+                        "elementType": "all",
+                        "stylers": [
+                            {
+                                "saturation": -100
+                            },
+                            {
+                                "lightness": 45
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "road.highway",
+                        "elementType": "all",
+                        "stylers": [
+                            {
+                                "visibility": "simplified"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "road.arterial",
+                        "elementType": "labels.icon",
+                        "stylers": [
+                            {
+                                "visibility": "off"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "transit",
+                        "elementType": "all",
+                        "stylers": [
+                            {
+                                "visibility": "off"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "water",
+                        "elementType": "all",
+                        "stylers": [
+                            {
+                                "color": "#dde6e8"
+                            },
+                            {
+                                "visibility": "on"
+                            }
+                        ]
+                    }
+                ]
+            });
+
+            // Now geocode the address to get exact coordinates
+            geocodeAddress();
+        }
+
+        function geocodeAddress() {
+            const address = '55919 Nomatse Street, Kuyasa, Khayelitsha, Western Cape, 7784';
+            
+            // Create a geocoder instance
+            const geocoder = new google.maps.Geocoder();
+            
+            // Hide loading screen
+            document.getElementById('map-loading').style.display = 'none';
+            
+            geocoder.geocode({ 
+                'address': address,
+                'componentRestrictions': {
+                    'country': 'ZA' // South Africa
+                }
+            }, function(results, status) {
+                if (status === 'OK') {
+                    // Get the exact location from geocoding
+                    const location = results[0].geometry.location;
+                    const bounds = results[0].geometry.bounds;
+                    
+                    // Center and zoom the map to the exact location
+                    map.setCenter(location);
+                    map.setZoom(17); // Zoom in closer for better detail
+                    
+                    // If bounds are available, fit the map to the bounds
+                    if (bounds) {
+                        map.fitBounds(bounds);
+                    }
+                    
+                    // Create the marker at the exact location
+                    marker = new google.maps.Marker({
+                        position: location,
+                        map: map,
+                        title: 'KwaCaleni Soup Kitchen',
+                        icon: {
+                            path: google.maps.SymbolPath.CIRCLE,
+                            scale: 14,
+                            fillColor: "#DC2626",
+                            fillOpacity: 1,
+                            strokeColor: "#FFFFFF",
+                            strokeWeight: 3
+                        },
+                        animation: google.maps.Animation.DROP
+                    });
+
+                    // Create info window
+                    infoWindow = new google.maps.InfoWindow({
+                        content: `
+                            <div style="padding: 12px; max-width: 240px;">
+                                <h3 style="margin: 0 0 8px; color: #DC2626; font-weight: bold; font-size: 16px;">KwaCaleni Soup Kitchen</h3>
+                                <p style="margin: 0; font-size: 14px; color: #4B5563; line-height: 1.4;">
+                                    <strong>Exact Address:</strong><br>
+                                    55919 NOMATSE STREET<br>
+                                    KUYASA, KHAYELITSHA<br>
+                                    WESTERN CAPE, 7784
+                                </p>
+                                <p style="margin: 8px 0 0; font-size: 14px; color: #4B5563;">
+                                    <strong>Phone:</strong> 078 907 1456<br>
+                                    <strong>Email:</strong> kwacalenisk@gmail.com
+                                </p>
+                                <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e5e7eb;">
+                                    <small style="color: #6b7280; font-size: 12px;">
+                                        Emergency food assistance available during operating hours
+                                    </small>
+                                </div>
+                            </div>
+                        `
+                    });
+
+                    // Add click listener to marker
+                    marker.addListener('click', () => {
+                        infoWindow.open(map, marker);
+                    });
+
+                    // Open info window by default
+                    infoWindow.open(map, marker);
+                    
+                    // Log the exact coordinates for debugging
+                    console.log('Exact coordinates found:', location.lat(), location.lng());
+                    console.log('Formatted address:', results[0].formatted_address);
+                    
+                } else {
+                    // If geocoding fails, show error and use a marker anyway
+                    console.error('Geocode was not successful for the following reason: ' + status);
+                    
+                    // Create a marker at approximate location (Khayelitsha area)
+                    const approximateLocation = { lat: -34.0522, lng: 18.6810 };
+                    map.setCenter(approximateLocation);
+                    map.setZoom(15);
+                    
+                    marker = new google.maps.Marker({
+                        position: approximateLocation,
+                        map: map,
+                        title: 'KwaCaleni Soup Kitchen (Approximate Location)',
+                        icon: {
+                            path: google.maps.SymbolPath.CIRCLE,
+                            scale: 12,
+                            fillColor: "#DC2626",
+                            fillOpacity: 0.8,
+                            strokeColor: "#FFFFFF",
+                            strokeWeight: 2
+                        }
+                    });
+                    
+                    infoWindow = new google.maps.InfoWindow({
+                        content: `
+                            <div style="padding: 12px; max-width: 240px;">
+                                <h3 style="margin: 0 0 8px; color: #DC2626; font-weight: bold; font-size: 16px;">KwaCaleni Soup Kitchen</h3>
+                                <p style="margin: 0; font-size: 14px; color: #4B5563; line-height: 1.4;">
+                                    <strong>Address:</strong><br>
+                                    55919 NOMATSE STREET<br>
+                                    KUYASA, KHAYELITSHA<br>
+                                    WESTERN CAPE, 7784
+                                </p>
+                                <p style="margin: 8px 0 0; font-size: 14px; color: #ef4444;">
+                                    <i>Note: Showing approximate location. Exact coordinates could not be determined.</i>
+                                </p>
+                            </div>
+                        `
+                    });
+                    
+                    infoWindow.open(map, marker);
+                }
+            });
+        }
+
+        // Handle Google Maps API loading error
+        window.gm_authFailure = function() {
+            alert('Google Maps failed to load. Please check your API keys and ensure both Maps JavaScript API and Geocoding API are enabled in Google Cloud Console.');
+            document.getElementById('map-loading').innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <i data-lucide="alert-triangle" class="w-12 h-12 text-red-500 mb-4"></i>
+                    <p class="text-gray-600">Failed to load map. Please check API configuration.</p>
+                </div>
+            `;
+            lucide.createIcons();
+        };
 
         // Navbar Scroll Effect
         const navbar = document.getElementById('navbar');
