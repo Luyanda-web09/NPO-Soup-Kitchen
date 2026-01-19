@@ -7,7 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Add Google Maps API with your key -->
+    <!-- IMPORTANT: Replace with your actual Google Maps API key -->
+    <!-- You need to enable: Maps JavaScript API and Geocoding API -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmqJD5XxpPozi-bG9OqFm5_C6FeBiDaYw&callback=initMap&libraries=&v=weekly" defer></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -22,6 +23,21 @@
             height: 100%;
             background: #f3f4f6;
             color: #6b7280;
+        }
+        .donation-type-btn.active {
+            border-color: #dc2626;
+            background-color: #fef2f2;
+            color: #dc2626;
+        }
+        .item-btn.selected {
+            border-color: #f97316;
+            background-color: #ffedd5;
+            color: #9a3412;
+        }
+        .amount-btn.selected {
+            background-color: #dc2626;
+            color: white;
+            border-color: #dc2626;
         }
     </style>
 </head>
@@ -310,24 +326,29 @@
                                 <p class="text-gray-500 mt-1">Fill out the form below to get started.</p>
                             </div>
                             <div class="p-8">
-                                <form id="volunteer-form" class="space-y-6">
+                                <form id="volunteer-form" action="https://formspree.io/f/xkoorvdn" method="POST" class="space-y-6">
+                                    <!-- Full Name -->
                                     <div class="space-y-2">
-                                        <label class="text-sm font-medium text-gray-700">Full Name</label>
-                                        <input type="text" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Jane Doe">
+                                        <label class="text-sm font-medium text-gray-700">Full Name *</label>
+                                        <input type="text" name="name" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Jane Doe">
                                     </div>
+
+                                    <!-- Email & Phone -->
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div class="space-y-2">
-                                            <label class="text-sm font-medium text-gray-700">Email Address</label>
-                                            <input type="email" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="jane@example.com">
+                                            <label class="text-sm font-medium text-gray-700">Email Address *</label>
+                                            <input type="email" name="email" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="jane@example.com">
                                         </div>
                                         <div class="space-y-2">
-                                            <label class="text-sm font-medium text-gray-700">Phone Number</label>
-                                            <input type="tel" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="078 123 4567">
+                                            <label class="text-sm font-medium text-gray-700">Phone Number *</label>
+                                            <input type="tel" name="phone" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="078 123 4567">
                                         </div>
                                     </div>
+
+                                    <!-- Availability -->
                                     <div class="space-y-2">
-                                        <label class="text-sm font-medium text-gray-700">Availability</label>
-                                        <select class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+                                        <label class="text-sm font-medium text-gray-700">Availability *</label>
+                                        <select name="availability" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
                                             <option value="">Select your availability</option>
                                             <option value="weekday-mornings">Weekday Mornings</option>
                                             <option value="weekday-afternoons">Weekday Afternoons</option>
@@ -335,10 +356,53 @@
                                             <option value="flexible">Flexible</option>
                                         </select>
                                     </div>
+
+                                    <!-- Interests -->
                                     <div class="space-y-2">
-                                        <label class="text-sm font-medium text-gray-700">Why do you want to join us?</label>
-                                        <textarea class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 min-h-[120px]" placeholder="Tell us a bit about yourself..."></textarea>
+                                        <label class="text-sm font-medium text-gray-700">Areas of Interest</label>
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <label class="flex items-center space-x-2">
+                                                <input type="checkbox" name="interests[]" value="cooking" class="rounded text-red-600">
+                                                <span class="text-sm">Cooking/Serving</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2">
+                                                <input type="checkbox" name="interests[]" value="gardening" class="rounded text-red-600">
+                                                <span class="text-sm">Gardening</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2">
+                                                <input type="checkbox" name="interests[]" value="boxing" class="rounded text-red-600">
+                                                <span class="text-sm">Boxing Coaching</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2">
+                                                <input type="checkbox" name="interests[]" value="sewing" class="rounded text-red-600">
+                                                <span class="text-sm">Sewing Classes</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2">
+                                                <input type="checkbox" name="interests[]" value="admin" class="rounded text-red-600">
+                                                <span class="text-sm">Administration</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2">
+                                                <input type="checkbox" name="interests[]" value="fundraising" class="rounded text-red-600">
+                                                <span class="text-sm">Fundraising</span>
+                                            </label>
+                                        </div>
                                     </div>
+
+                                    <!-- Experience -->
+                                    <div class="space-y-2">
+                                        <label class="text-sm font-medium text-gray-700">Previous Volunteer Experience</label>
+                                        <textarea name="experience" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 min-h-[100px]" placeholder="Tell us about any previous volunteer experience..."></textarea>
+                                    </div>
+
+                                    <!-- Why Join -->
+                                    <div class="space-y-2">
+                                        <label class="text-sm font-medium text-gray-700">Why do you want to volunteer with us? *</label>
+                                        <textarea name="message" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 min-h-[120px]" placeholder="Tell us why you'd like to join our mission..."></textarea>
+                                    </div>
+
+                                    <input type="hidden" name="_subject" value="New Volunteer Application - KwaCaleni Soup Kitchen">
+                                    <input type="hidden" name="_replyto" id="volunteer-email">
+                                    
                                     <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white h-12 text-lg font-bold rounded-md transition-colors">Submit Application</button>
                                 </form>
                             </div>
@@ -371,11 +435,11 @@
                                 <button onclick="resetDonateForm()" class="px-6 py-2 border border-gray-300 rounded-md hover:bg-gray-50">Donate Again</button>
                             </div>
                             <div id="donate-form-container">
-                                <form id="donate-form" class="space-y-8">
+                                <form id="donate-form" action="https://formspree.io/f/xkoorvdn" method="POST" class="space-y-8">
                                     <div>
                                         <h3 class="text-lg font-semibold mb-4">I want to donate:</h3>
                                         <div class="grid grid-cols-3 gap-4">
-                                            <button type="button" onclick="setDonationType('money')" id="btn-money" class="donation-type-btn flex flex-col items-center p-4 rounded-xl border-2 border-red-600 bg-red-50 text-red-700 transition-all">
+                                            <button type="button" onclick="setDonationType('money')" id="btn-money" class="donation-type-btn active flex flex-col items-center p-4 rounded-xl border-2 border-red-600 bg-red-50 text-red-700 transition-all">
                                                 <i data-lucide="credit-card" class="w-6 h-6 mb-2"></i>
                                                 <span class="font-medium">Money</span>
                                             </button>
@@ -395,14 +459,15 @@
                                         <h3 class="text-lg font-semibold mb-4">Select Amount (Rands):</h3>
                                         <div class="flex flex-wrap gap-3 mb-4">
                                             <button type="button" onclick="setAmount(50)" class="amount-btn flex-1 min-w-[80px] py-3 rounded-lg border font-semibold transition-all bg-white text-gray-600 border-gray-200 hover:border-gray-300" data-amount="50">R50</button>
-                                            <button type="button" onclick="setAmount(100)" class="amount-btn flex-1 min-w-[80px] py-3 rounded-lg border font-semibold transition-all bg-red-600 text-white border-red-600 shadow-md" data-amount="100">R100</button>
+                                            <button type="button" onclick="setAmount(100)" class="amount-btn selected flex-1 min-w-[80px] py-3 rounded-lg border font-semibold transition-all bg-red-600 text-white border-red-600 shadow-md" data-amount="100">R100</button>
                                             <button type="button" onclick="setAmount(250)" class="amount-btn flex-1 min-w-[80px] py-3 rounded-lg border font-semibold transition-all bg-white text-gray-600 border-gray-200 hover:border-gray-300" data-amount="250">R250</button>
                                             <button type="button" onclick="setAmount(500)" class="amount-btn flex-1 min-w-[80px] py-3 rounded-lg border font-semibold transition-all bg-white text-gray-600 border-gray-200 hover:border-gray-300" data-amount="500">R500</button>
                                             <button type="button" onclick="setAmount(1000)" class="amount-btn flex-1 min-w-[80px] py-3 rounded-lg border font-semibold transition-all bg-white text-gray-600 border-gray-200 hover:border-gray-300" data-amount="1000">R1000</button>
                                         </div>
                                         <div class="relative">
                                             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">R</span>
-                                            <input type="number" id="custom-amount" value="100" class="w-full pl-8 py-2 border border-gray-300 rounded-md text-lg font-semibold" placeholder="Custom Amount">
+                                            <input type="number" id="custom-amount" name="amount" value="100" class="w-full pl-8 py-3 border border-gray-300 rounded-md text-lg font-semibold" placeholder="Custom Amount">
+                                            <input type="hidden" id="selected-amount" name="selected_amount" value="100">
                                         </div>
                                     </div>
 
@@ -414,16 +479,16 @@
                                                 <p class="text-sm text-orange-800">We accept non-perishable items daily. Fresh produce can be dropped off on Mondays and Thursdays. Select items you plan to donate:</p>
                                             </div>
                                             <div class="grid grid-cols-2 gap-3" id="food-options">
-                                                <!-- JS will populate this or we hardcode -->
-                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-orange-100 bg-white text-gray-600 hover:bg-orange-100 transition-colors" onclick="toggleItem(this)">Rice & Maize Meal</button>
-                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-orange-100 bg-white text-gray-600 hover:bg-orange-100 transition-colors" onclick="toggleItem(this)">Canned Beans & Veg</button>
-                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-orange-100 bg-white text-gray-600 hover:bg-orange-100 transition-colors" onclick="toggleItem(this)">Cooking Oil</button>
-                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-orange-100 bg-white text-gray-600 hover:bg-orange-100 transition-colors" onclick="toggleItem(this)">Fresh Vegetables</button>
-                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-orange-100 bg-white text-gray-600 hover:bg-orange-100 transition-colors" onclick="toggleItem(this)">Long Life Milk</button>
-                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-orange-100 bg-white text-gray-600 hover:bg-orange-100 transition-colors" onclick="toggleItem(this)">Tea & Sugar</button>
-                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-orange-100 bg-white text-gray-600 hover:bg-orange-100 transition-colors" onclick="toggleItem(this)">Peanut Butter</button>
-                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-orange-100 bg-white text-gray-600 hover:bg-orange-100 transition-colors" onclick="toggleItem(this)">Bread Flour</button>
+                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-orange-100 bg-white text-gray-600 hover:bg-orange-100 transition-colors" onclick="toggleItem(this, 'food')">Rice & Maize Meal</button>
+                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-orange-100 bg-white text-gray-600 hover:bg-orange-100 transition-colors" onclick="toggleItem(this, 'food')">Canned Beans & Veg</button>
+                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-orange-100 bg-white text-gray-600 hover:bg-orange-100 transition-colors" onclick="toggleItem(this, 'food')">Cooking Oil</button>
+                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-orange-100 bg-white text-gray-600 hover:bg-orange-100 transition-colors" onclick="toggleItem(this, 'food')">Fresh Vegetables</button>
+                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-orange-100 bg-white text-gray-600 hover:bg-orange-100 transition-colors" onclick="toggleItem(this, 'food')">Long Life Milk</button>
+                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-orange-100 bg-white text-gray-600 hover:bg-orange-100 transition-colors" onclick="toggleItem(this, 'food')">Tea & Sugar</button>
+                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-orange-100 bg-white text-gray-600 hover:bg-orange-100 transition-colors" onclick="toggleItem(this, 'food')">Peanut Butter</button>
+                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-orange-100 bg-white text-gray-600 hover:bg-orange-100 transition-colors" onclick="toggleItem(this, 'food')">Bread Flour</button>
                                             </div>
+                                            <input type="hidden" id="food-items" name="food_items">
                                         </div>
                                     </div>
 
@@ -435,29 +500,34 @@
                                                 <p class="text-sm text-blue-800">Help us maintain our garden, gym, and kitchen. We are currently in need of the following items:</p>
                                             </div>
                                             <div class="grid grid-cols-2 gap-3" id="supply-options">
-                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-100 bg-white text-gray-600 hover:bg-blue-100 transition-colors" onclick="toggleItem(this)">Gardening Tools</button>
-                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-100 bg-white text-gray-600 hover:bg-blue-100 transition-colors" onclick="toggleItem(this)">Seeds & Fertilizer</button>
-                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-100 bg-white text-gray-600 hover:bg-blue-100 transition-colors" onclick="toggleItem(this)">Kids Boxing Gloves</button>
-                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-100 bg-white text-gray-600 hover:bg-blue-100 transition-colors" onclick="toggleItem(this)">Gym Mats</button>
-                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-100 bg-white text-gray-600 hover:bg-blue-100 transition-colors" onclick="toggleItem(this)">Sewing Machines</button>
-                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-100 bg-white text-gray-600 hover:bg-blue-100 transition-colors" onclick="toggleItem(this)">Fabrics & Textiles</button>
-                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-100 bg-white text-gray-600 hover:bg-blue-100 transition-colors" onclick="toggleItem(this)">Threads & Needles</button>
-                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-100 bg-white text-gray-600 hover:bg-blue-100 transition-colors" onclick="toggleItem(this)">Scissors</button>
-                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-100 bg-white text-gray-600 hover:bg-blue-100 transition-colors" onclick="toggleItem(this)">Cleaning Supplies</button>
-                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-100 bg-white text-gray-600 hover:bg-blue-100 transition-colors" onclick="toggleItem(this)">Kitchen Utensils</button>
+                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-100 bg-white text-gray-600 hover:bg-blue-100 transition-colors" onclick="toggleItem(this, 'supplies')">Gardening Tools</button>
+                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-100 bg-white text-gray-600 hover:bg-blue-100 transition-colors" onclick="toggleItem(this, 'supplies')">Seeds & Fertilizer</button>
+                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-100 bg-white text-gray-600 hover:bg-blue-100 transition-colors" onclick="toggleItem(this, 'supplies')">Kids Boxing Gloves</button>
+                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-100 bg-white text-gray-600 hover:bg-blue-100 transition-colors" onclick="toggleItem(this, 'supplies')">Gym Mats</button>
+                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-100 bg-white text-gray-600 hover:bg-blue-100 transition-colors" onclick="toggleItem(this, 'supplies')">Sewing Machines</button>
+                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-100 bg-white text-gray-600 hover:bg-blue-100 transition-colors" onclick="toggleItem(this, 'supplies')">Fabrics & Textiles</button>
+                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-100 bg-white text-gray-600 hover:bg-blue-100 transition-colors" onclick="toggleItem(this, 'supplies')">Threads & Needles</button>
+                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-100 bg-white text-gray-600 hover:bg-blue-100 transition-colors" onclick="toggleItem(this, 'supplies')">Scissors</button>
+                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-100 bg-white text-gray-600 hover:bg-blue-100 transition-colors" onclick="toggleItem(this, 'supplies')">Cleaning Supplies</button>
+                                                <button type="button" class="item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-100 bg-white text-gray-600 hover:bg-blue-100 transition-colors" onclick="toggleItem(this, 'supplies')">Kitchen Utensils</button>
                                             </div>
+                                            <input type="hidden" id="supply-items" name="supply_items">
                                         </div>
                                     </div>
 
                                     <div class="space-y-4">
                                         <h3 class="text-lg font-semibold">Your Information:</h3>
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <input type="text" required class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Full Name">
-                                            <input type="email" required class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Email Address">
+                                            <input type="text" name="name" required class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Full Name *">
+                                            <input type="email" name="email" required class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Email Address *">
                                         </div>
-                                        <textarea class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 resize-none" placeholder="Leave a message (optional)"></textarea>
+                                        <input type="tel" name="phone" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Phone Number (optional)">
+                                        <textarea name="message" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 resize-none" placeholder="Leave a message (optional)"></textarea>
                                     </div>
 
+                                    <input type="hidden" name="donation_type" id="donation-type" value="money">
+                                    <input type="hidden" name="_subject" id="donate-subject" value="New Money Donation - KwaCaleni Soup Kitchen">
+                                    
                                     <button type="submit" id="donate-submit-btn" class="w-full bg-red-600 hover:bg-red-700 text-white h-14 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">Pledge R100 Donation</button>
                                 </form>
                             </div>
@@ -507,7 +577,7 @@
                         <div class="space-y-8">
                             <div class="flex gap-4 items-start">
                                 <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center shrink-0"><i data-lucide="map-pin" class="w-6 h-6 text-red-500"></i></div>
-                                <div><h4 class="text-lg font-semibold mb-1">Address</h4><p class="text-gray-400">55919 NOMATSE STREET, KUYASA<br />KHAYELITSHA, WESTERN CAPE, 7784</p></div>
+                                <div><h4 class="text-lg font-semibold mb-1">Address</h4><p class="text-gray-400">104 NOMATSE STREET, KUYASA<br />KHAYELITSHA, WESTERN CAPE, 7784</p></div>
                             </div>
                             <div class="flex gap-4 items-start">
                                 <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center shrink-0"><i data-lucide="phone" class="w-6 h-6 text-red-500"></i></div>
@@ -570,7 +640,7 @@
                 <div>
                     <h3 class="text-lg font-semibold mb-6">Contact Us</h3>
                     <ul class="space-y-6">
-                        <li class="flex gap-4"><i data-lucide="map-pin" class="w-5 h-5 text-red-500 shrink-0"></i><span class="text-gray-400">55919 NOMATSE STREET, KUYASA<br />KHAYELITSHA, WESTERN CAPE, 7784</span></li>
+                        <li class="flex gap-4"><i data-lucide="map-pin" class="w-5 h-5 text-red-500 shrink-0"></i><span class="text-gray-400">104 NOMATSE STREET, KUYASA<br />KHAYELITSHA, WESTERN CAPE, 7784</span></li>
                         <li class="flex gap-4"><i data-lucide="phone" class="w-5 h-5 text-red-500 shrink-0"></i><span class="text-gray-400">078 907 1456</span></li>
                         <li class="flex gap-4"><i data-lucide="mail" class="w-5 h-5 text-red-500 shrink-0"></i><span class="text-gray-400">kwacalenisk@gmail.com</span></li>
                     </ul>
@@ -733,7 +803,7 @@
         }
 
         function geocodeAddress() {
-            const address = '55919 Nomatse Street, Kuyasa, Khayelitsha, Western Cape, 7784';
+            const address = '104 Nomatse Street, Kuyasa, Khayelitsha, Western Cape, 7784';
             
             // Create a geocoder instance
             const geocoder = new google.maps.Geocoder();
@@ -784,7 +854,7 @@
                                 <h3 style="margin: 0 0 8px; color: #DC2626; font-weight: bold; font-size: 16px;">KwaCaleni Soup Kitchen</h3>
                                 <p style="margin: 0; font-size: 14px; color: #4B5563; line-height: 1.4;">
                                     <strong>Exact Address:</strong><br>
-                                    55919 NOMATSE STREET<br>
+                                    104 NOMATSE STREET<br>
                                     KUYASA, KHAYELITSHA<br>
                                     WESTERN CAPE, 7784
                                 </p>
@@ -842,7 +912,7 @@
                                 <h3 style="margin: 0 0 8px; color: #DC2626; font-weight: bold; font-size: 16px;">KwaCaleni Soup Kitchen</h3>
                                 <p style="margin: 0; font-size: 14px; color: #4B5563; line-height: 1.4;">
                                     <strong>Address:</strong><br>
-                                    55919 NOMATSE STREET<br>
+                                    104 NOMATSE STREET<br>
                                     KUYASA, KHAYELITSHA<br>
                                     WESTERN CAPE, 7784
                                 </p>
@@ -937,6 +1007,7 @@
         // Mobile Menu
         mobileMenuBtn.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
+            lucide.createIcons();
         });
 
         mobileLinks.forEach(link => {
@@ -949,11 +1020,25 @@
         const volunteerForm = document.getElementById('volunteer-form');
         const volunteerSuccess = document.getElementById('volunteer-success');
         const volunteerFormContainer = document.getElementById('volunteer-form-container');
+        const volunteerEmail = document.getElementById('volunteer-email');
 
         volunteerForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            
+            // Set the email for reply-to
+            const emailInput = volunteerForm.querySelector('input[name="email"]');
+            if (emailInput) {
+                volunteerEmail.value = emailInput.value;
+            }
+            
+            // Show success message
             volunteerFormContainer.classList.add('hidden');
             volunteerSuccess.classList.remove('hidden');
+            
+            // Actually submit the form (Formspree will handle it)
+            setTimeout(() => {
+                volunteerForm.submit();
+            }, 1000);
         });
 
         function resetVolunteerForm() {
@@ -965,7 +1050,8 @@
         // Donate Form
         let currentDonationType = 'money';
         let currentAmount = 100;
-        let selectedItems = [];
+        let selectedFoodItems = [];
+        let selectedSupplyItems = [];
 
         const btnMoney = document.getElementById('btn-money');
         const btnFood = document.getElementById('btn-food');
@@ -978,56 +1064,54 @@
         const donateSuccess = document.getElementById('donate-success');
         const donateFormContainer = document.getElementById('donate-form-container');
         const customAmountInput = document.getElementById('custom-amount');
+        const selectedAmountInput = document.getElementById('selected-amount');
+        const donationTypeInput = document.getElementById('donation-type');
+        const donateSubject = document.getElementById('donate-subject');
+        const foodItemsInput = document.getElementById('food-items');
+        const supplyItemsInput = document.getElementById('supply-items');
 
         function setDonationType(type) {
             currentDonationType = type;
-            selectedItems = []; // Reset items
+            donationTypeInput.value = type;
+            
+            // Update subject line
+            donateSubject.value = `New ${type.charAt(0).toUpperCase() + type.slice(1)} Donation - KwaCaleni Soup Kitchen`;
             
             // Reset Buttons
             [btnMoney, btnFood, btnSupplies].forEach(btn => {
-                btn.className = 'donation-type-btn flex flex-col items-center p-4 rounded-xl border-2 border-gray-200 text-gray-600 hover:border-red-200 transition-all';
+                btn.classList.remove('active');
             });
             
-            const activeClass = 'donation-type-btn flex flex-col items-center p-4 rounded-xl border-2 border-red-600 bg-red-50 text-red-700 transition-all';
-            
             if (type === 'money') {
-                btnMoney.className = activeClass;
+                btnMoney.classList.add('active');
                 moneySection.classList.remove('hidden');
                 foodSection.classList.add('hidden');
                 suppliesSection.classList.add('hidden');
             } else if (type === 'food') {
-                btnFood.className = activeClass;
+                btnFood.classList.add('active');
                 moneySection.classList.add('hidden');
                 foodSection.classList.remove('hidden');
                 suppliesSection.classList.add('hidden');
             } else if (type === 'supplies') {
-                btnSupplies.className = activeClass;
+                btnSupplies.classList.add('active');
                 moneySection.classList.add('hidden');
                 foodSection.classList.add('hidden');
                 suppliesSection.classList.remove('hidden');
             }
             
-            // Reset Item selections visual
-            document.querySelectorAll('.item-btn').forEach(btn => {
-                btn.className = 'item-btn text-left text-sm px-3 py-2 rounded-lg border border-orange-100 bg-white text-gray-600 hover:bg-orange-100 transition-colors';
-                if(type === 'supplies') {
-                     btn.className = 'item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-100 bg-white text-gray-600 hover:bg-blue-100 transition-colors';
-                }
-            });
-
             updateDonateButton();
         }
 
         function setAmount(amount) {
             currentAmount = amount;
             customAmountInput.value = amount;
+            selectedAmountInput.value = amount;
             
             // Update visual state of amount buttons
             document.querySelectorAll('.amount-btn').forEach(btn => {
+                btn.classList.remove('selected');
                 if (parseInt(btn.dataset.amount) === amount) {
-                    btn.className = 'amount-btn flex-1 min-w-[80px] py-3 rounded-lg border font-semibold transition-all bg-red-600 text-white border-red-600 shadow-md';
-                } else {
-                    btn.className = 'amount-btn flex-1 min-w-[80px] py-3 rounded-lg border font-semibold transition-all bg-white text-gray-600 border-gray-200 hover:border-gray-300';
+                    btn.classList.add('selected');
                 }
             });
             updateDonateButton();
@@ -1035,31 +1119,38 @@
 
         customAmountInput.addEventListener('input', (e) => {
             currentAmount = e.target.value;
+            selectedAmountInput.value = currentAmount;
+            
             // Deselect buttons if custom amount
             document.querySelectorAll('.amount-btn').forEach(btn => {
-                 btn.className = 'amount-btn flex-1 min-w-[80px] py-3 rounded-lg border font-semibold transition-all bg-white text-gray-600 border-gray-200 hover:border-gray-300';
+                btn.classList.remove('selected');
             });
             updateDonateButton();
         });
 
-        function toggleItem(btn) {
+        function toggleItem(btn, type) {
             const item = btn.textContent;
-            const index = selectedItems.indexOf(item);
             
-            if (index > -1) {
-                selectedItems.splice(index, 1);
-                if (currentDonationType === 'food') {
-                    btn.className = 'item-btn text-left text-sm px-3 py-2 rounded-lg border border-orange-100 bg-white text-gray-600 hover:bg-orange-100 transition-colors';
+            if (type === 'food') {
+                const index = selectedFoodItems.indexOf(item);
+                if (index > -1) {
+                    selectedFoodItems.splice(index, 1);
+                    btn.classList.remove('selected');
                 } else {
-                    btn.className = 'item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-100 bg-white text-gray-600 hover:bg-blue-100 transition-colors';
+                    selectedFoodItems.push(item);
+                    btn.classList.add('selected');
                 }
-            } else {
-                selectedItems.push(item);
-                if (currentDonationType === 'food') {
-                    btn.className = 'item-btn text-left text-sm px-3 py-2 rounded-lg border border-orange-300 bg-orange-200 text-orange-900 font-medium transition-colors';
+                foodItemsInput.value = selectedFoodItems.join(', ');
+            } else if (type === 'supplies') {
+                const index = selectedSupplyItems.indexOf(item);
+                if (index > -1) {
+                    selectedSupplyItems.splice(index, 1);
+                    btn.classList.remove('selected');
                 } else {
-                    btn.className = 'item-btn text-left text-sm px-3 py-2 rounded-lg border border-blue-300 bg-blue-200 text-blue-900 font-medium transition-colors';
+                    selectedSupplyItems.push(item);
+                    btn.classList.add('selected');
                 }
+                supplyItemsInput.value = selectedSupplyItems.join(', ');
             }
         }
 
@@ -1073,18 +1164,63 @@
 
         donateForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            
+            // Show success message
             donateFormContainer.classList.add('hidden');
             donateSuccess.classList.remove('hidden');
+            
+            // Actually submit the form (Formspree will handle it)
+            setTimeout(() => {
+                donateForm.submit();
+            }, 1000);
         });
 
         function resetDonateForm() {
             donateForm.reset();
             setDonationType('money');
             setAmount(100);
+            selectedFoodItems = [];
+            selectedSupplyItems = [];
+            foodItemsInput.value = '';
+            supplyItemsInput.value = '';
+            
+            // Reset all item buttons
+            document.querySelectorAll('.item-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
             donateSuccess.classList.add('hidden');
             donateFormContainer.classList.remove('hidden');
         }
 
+        // Initialize
+        setDonationType('money');
+        setAmount(100);
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Update current year in footer
+        document.addEventListener('DOMContentLoaded', function() {
+            const yearSpan = document.querySelector('footer p');
+            if (yearSpan) {
+                yearSpan.innerHTML = yearSpan.innerHTML.replace('2025', new Date().getFullYear());
+            }
+        });
     </script>
 </body>
 </html>
